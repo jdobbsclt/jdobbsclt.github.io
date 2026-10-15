@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>This page has moved</title>
+<style>
+  body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;max-width:560px;margin:48px auto;padding:0 16px;line-height:1.5;color:#222;background:#fff}
+  @media (prefers-color-scheme:dark){body{color:#eee;background:#16181b}a{color:#8ab4ff}}
+</style>
+<script>
+// These projects moved from jdobbsclt.github.io to hypercaffiumlabs.github.io, and GitHub doesn't
+// forward Pages addresses. This one file is served for every old address (as 404.html and as copies
+// at the old page paths) and sends the visitor to the same page at the new address, keeping the
+// ?share-link and #tab. For the calculator it also carries setups saved under the old address,
+// after the # (never sent to a server); the calculator merges them into its own saved setups.
+(function(){
+  var NEW = 'https://hypercaffiumlabs.github.io';
+  var path = location.pathname;
+  var m = path.match(/^\/(gomining-flywheel-calculator|gomining-servicetap)(\/.*)?$/);
+  var dest = !m ? NEW + '/gomining-flywheel-calculator/'
+    : /^\/gomining-servicetap\/?$/.test(path) ? 'https://github.com/hypercaffiumlabs/gomining-servicetap'
+    : NEW + path;
+  var hash = location.hash;
+  if(m && m[1] === 'gomining-flywheel-calculator'){
+    try{
+      // Only once per browser: the calculator saves its own tidied copy, so a second send would
+      // look different and be added again as "(old site)".
+      var raw = localStorage.getItem('gmtFlywheel.saved.v1');
+      if(raw && JSON.parse(raw) && !localStorage.getItem('gmtFlywheel.forwarded')){
+        var enc = btoa(unescape(encodeURIComponent(raw))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+        hash = (hash || '#') + '!import=' + enc;
+        localStorage.setItem('gmtFlywheel.forwarded', new Date().toISOString());
+      }
+    }catch(err){ /* no storage or unreadable: forward without setups */ }
+  }
+  dest += location.search + hash;
+  document.documentElement.setAttribute('data-dest', dest);
+  location.replace(dest);
+})();
+</script>
+</head>
+<body>
+<h1>This page has moved</h1>
+<p>The GoMining calculator and ServiceTap now live at <a id="go" href="https://hypercaffiumlabs.github.io/gomining-flywheel-calculator/">hypercaffiumlabs.github.io</a>. You should be sent there automatically. If not, follow the link and update your bookmark.</p>
+<script>
+  var d = document.documentElement.getAttribute('data-dest');
+  if(d) document.getElementById('go').href = d;
+</script>
+</body>
+</html>
