@@ -37,6 +37,21 @@
   }
   dest += location.search + hash;
   document.documentElement.setAttribute('data-dest', dest);
+  // Anonymous count of visits still arriving via an old address (PostHog, no cookies, no IP kept):
+  // just the old path and the referring site, never the ?share-link, #tab or saved setups.
+  try{
+    if(location.hostname === 'jdobbsclt.github.io' && navigator.sendBeacon){
+      var ref = '';
+      try{ if(document.referrer){ var r = new URL(document.referrer); ref = r.origin + r.pathname; } }catch(err){}
+      navigator.sendBeacon('https://us.i.posthog.com/i/v0/e/', new Blob([JSON.stringify({
+        api_key: 'phc_DdB9QwSE7UQQXKvj2M6V5Ysvd9KnzbebogUmXV7e57N3',
+        event: 'old_address_redirect',
+        distinct_id: 'redirect-' + Math.random().toString(36).slice(2),
+        properties: { $process_person_profile: false, $current_url: location.origin + location.pathname,
+                      $pathname: location.pathname, $referrer: ref || '$direct' }
+      })], { type: 'text/plain' }));
+    }
+  }catch(err){ /* counting must never block the forward */ }
   location.replace(dest);
 })();
 </script>
